@@ -103,3 +103,34 @@ def calculate_volume_roc(df, period=1):
     """
     v_roc = df['Volume'].pct_change(periods=period) * 100
     return v_roc
+
+
+
+def calculate_vol_ratio(df, period=14):
+    """
+    Volatility Ratio (Vol_Ratio)
+    Compares Today's True Range to the Historical Average True Range.
+    
+    Formula: Today's TR / Previous N-day ATR
+    - 1.0 = Volatility is normal
+    - > 2.0 = Volatility Explosion (Breakout/Crash)
+    - < 0.5 = Volatility Compression (Calm before storm)
+    """
+    # 1. True Range Calculation (Same as NATR)
+    high_low = df['High'] - df['Low']
+    high_close = (df['High'] - df['Close'].shift()).abs()
+    low_close = (df['Low'] - df['Close'].shift()).abs()
+    
+    # True Range is the max of the three
+    tr = pd.concat([high_low, high_close, low_close], axis=1).max(axis=1)
+    
+    # 2. Average True Range (ATR)
+    # We use the previous 'period' days to establish the baseline
+    atr = tr.rolling(window=period).mean()
+    
+    # 3. Calculate Ratio
+    # We divide Today's TR by the PREVIOUS day's ATR baseline.
+    # We shift ATR by 1 to compare "Today's Reality" vs "Yesterday's Expectation"
+    vol_ratio = tr / atr.shift(1)
+    
+    return vol_ratio
