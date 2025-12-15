@@ -281,7 +281,7 @@ Contributions, issues, and feature requests are welcome! Feel free to check the 
 
 ## ⚠️ Disclaimer
 
-This project is for **educational purposes only**. Cryptocurrency trading involves substantial risk of loss. Do not use this system for actual trading without thorough testing and understanding of the risks involved.
+This project is for **educational purposes only**. The models are not hyperparameter-tuned or optimized for production use—they serve as demonstrations of different ML approaches and pipeline architecture. Cryptocurrency trading involves substantial risk of loss. Do not use this system for actual trading without thorough testing, proper model optimization, and understanding of the risks involved.
 
 ---
 
