@@ -7,6 +7,16 @@ A comprehensive machine learning system for predicting Bitcoin price movements u
 [![scikit-learn](https://img.shields.io/badge/scikit--learn-1.x-green.svg)](https://scikit-learn.org/)
 [![XGBoost](https://img.shields.io/badge/XGBoost-latest-red.svg)](https://xgboost.readthedocs.io/)
 
+---
+
+If the ML model can predict whether Bitcoin's price will go up or down tomorrow with reasonable accuracy, it could potentially inform trading decisions and help understand market patterns. This project explores that possibility by building a complete machine learning pipeline that analyzes historical price data and technical indicators to forecast next-day price movements.
+
+The approach here is straightforward: we treat price prediction as a binary classification problem. Instead of trying to predict exact prices (which is extremely difficult), we simply ask "will tomorrow's closing price be higher or lower than today's?" This simpler question allows us to use a variety of machine learning algorithms and compare their performance. The system fetches real Bitcoin data, calculates commonly used technical indicators like RSI and MACD, and trains multiple models to find patterns in the data.
+
+What makes this project interesting is the comprehensive comparison of different ML approaches. From deep learning (LSTM) to traditional algorithms (Random Forest, SVM), each model brings its own strengths. The backtesting framework lets you see how each strategy would have performed historically, and the prediction system is ready to use with live data. It's a complete example of taking a machine learning project from data collection all the way to deployment.
+
+---
+
 ## 📋 Table of Contents
 
 - [Overview](#overview)
