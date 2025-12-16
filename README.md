@@ -35,15 +35,17 @@ What makes this project interesting is the comprehensive comparison of different
 This project implements a binary classification system to predict whether Bitcoin's price will move **UP** or **DOWN** the next day. It leverages:
 
 - **5 different ML algorithms** (LSTM, XGBoost, Random Forest, SVM, KNN)
-- **6 technical indicators** for feature engineering
+- **11 technical indicators** for feature engineering (6 technical + 4 macroeconomic + 1 volume ratio)
 - **Optimized decision thresholds** for each model
 - **Comprehensive backtesting framework** with performance comparison
 - **Production-ready prediction system** with confidence scoring
+- **Model consensus system** for multi-model prediction comparison
 
 ## ✨ Features
 
 - 🔄 **Automated data fetching** from Yahoo Finance API
-- 📊 **Technical indicator calculation** (RSI, MACD, Williams %R, Bollinger %B, NATR, Volume ROC)
+- 📊 **Technical indicator calculation** (RSI, MACD, Williams %R, Bollinger %B, NATR, Volume ROC, Volume Ratio)
+- 🌍 **Macroeconomic features** (Dollar Index, S&P 500, Gold, 10-Year Treasury)
 - 🤖 **Multiple ML models** with unified training pipeline
 - 🎯 **Threshold optimization** for maximum accuracy
 - 📈 **Backtesting engine** with Buy & Hold comparison
@@ -51,6 +53,7 @@ This project implements a binary classification system to predict whether Bitcoi
 - 💾 **Smart artifact management** (auto-save/load models, scalers, configs)
 - 🎨 **Rich visualizations** (confusion matrices, training curves, equity curves)
 - 🔮 **Live prediction system** with confidence scoring
+- 🏆 **Model consensus table** for comparing all 5 models side-by-side
 
 ## 📁 Project Structure
 
@@ -154,6 +157,7 @@ Open `start.ipynb` and run the cells sequentially to:
 
 Open `predictor.ipynb` to use the trained models:
 
+#### Single Model Prediction
 ```python
 # Initialize predictor with desired model
 bot = CryptoPredictor(prefix="btc_lstm")  # or btc_xgboost, btc_rf, btc_svm, btc_knn
@@ -162,10 +166,7 @@ bot = CryptoPredictor(prefix="btc_lstm")  # or btc_xgboost, btc_rf, btc_svm, btc
 bot.load_artifacts()
 
 # Predict next day movement
-bot.predict_next_day()  # Uses current date
-
-# Or predict for a specific date
-bot.predict_next_day(date_str="2025-12-15")
+bot.predict_next_day(target_date="2025-12-15")
 ```
 
 **Output Example:**
@@ -182,13 +183,53 @@ Prediction:       DOWN 🔴
 Confidence:       Medium
 ```
 
-## 📊 Technical Indicators
+#### Model Consensus (All 5 Models)
+```python
+import pandas as pd
 
-The system uses 8 features per time step:
+model_prefixes = ["btc_lstm", "btc_xgboost", "btc_rf", "btc_svm", "btc_knn"]
+target_date = "2025-12-13"
 
+results_list = []
+for prefix in model_prefixes:
+    bot = CryptoPredictor(prefix)
+    bot.load_artifacts()
+    stats = bot.predict_next_day(target_date)
+    results_list.append(stats)
+
+df = pd.DataFrame(results_list)
+print(df.to_string(index=False))
+```
+
+**Consensus Output Example:**
+```
+--- 🏆 MODEL CONSENSUS TABLE ---
+  Model Probability Threshold  Trend Confidence
+   LSTM      63.38%      0.38   UP 🟢     26.75%
+XGBOOST      50.10%      0.51 DOWN 🔴      0.19%
+     RF      51.11%      0.48   UP 🟢      2.22%
+    SVM      51.70%      0.52 DOWN 🔴      3.41%
+    KNN      50.08%      0.45   UP 🟢      0.15%
+```
+
+This consensus view helps you see agreement/disagreement across different model architectures.
+
+## 📊 Features & Indicators
+
+The system uses **17 features per time step**, combining price data, technical indicators, and macroeconomic factors:
+
+### Price Features (5)
+| Feature | Description |
+|---------|-------------|
+| **Open** | Opening price |
+| **High** | Highest price |
+| **Low** | Lowest price |
+| **Close** | Closing price |
+| **Volume** | Trading volume |
+
+### Technical Indicators (7)
 | Indicator | Description | Range |
 |-----------|-------------|-------|
-| **Close** | Closing price | Variable |
 | **RSI** | Relative Strength Index | 0-100 |
 | **MACD Line** | Moving Average Convergence Divergence | Variable |
 | **Signal Line** | MACD Signal Line | Variable |
@@ -196,6 +237,17 @@ The system uses 8 features per time step:
 | **Bollinger %B** | Position relative to Bollinger Bands | 0-1 (typically) |
 | **NATR** | Normalized Average True Range | Percentage |
 | **Volume ROC** | Volume Rate of Change | Percentage |
+| **Volume Ratio** | Current volume vs 14-day average | Ratio |
+
+### Macroeconomic Indicators (4)
+| Indicator | Description | Ticker |
+|-----------|-------------|--------|
+| **DXI** | US Dollar Index | DX-Y.NYB |
+| **SP500** | S&P 500 Index | ^GSPC |
+| **GOLD** | Gold Futures | GC=F |
+| **Ten_Y** | 10-Year Treasury Yield | ^TNX |
+
+These macroeconomic features help capture broader market sentiment and correlations that may influence Bitcoin price movements.
 
 ## 🤖 Machine Learning Models
 
